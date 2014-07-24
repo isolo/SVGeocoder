@@ -77,6 +77,7 @@
         
         NSDictionary *locationDict = [[result objectForKey:@"geometry"] objectForKey:@"location"];
         NSDictionary *boundsDict = [[result objectForKey:@"geometry"] objectForKey:@"bounds"];
+        NSDictionary *viewportDict = [[result objectForKey:@"geometry"] objectForKey:@"viewport"];
         
         CLLocationDegrees lat = [[locationDict objectForKey:@"lat"] doubleValue];
         CLLocationDegrees lng = [[locationDict objectForKey:@"lng"] doubleValue];
@@ -85,12 +86,31 @@
         
         NSDictionary *northEastDict = [boundsDict objectForKey:@"northeast"];
         NSDictionary *southWestDict = [boundsDict objectForKey:@"southwest"];
-        CLLocationDegrees northEastLatitude = [[northEastDict objectForKey:@"lat"] doubleValue];
-        CLLocationDegrees southWestLatitude = [[southWestDict objectForKey:@"lat"] doubleValue];
-        CLLocationDegrees latitudeDelta = fabs(northEastLatitude - southWestLatitude);
-        CLLocationDegrees northEastLongitude = [[northEastDict objectForKey:@"lng"] doubleValue];
-        CLLocationDegrees southWestLongitude = [[southWestDict objectForKey:@"lng"] doubleValue];
-        CLLocationDegrees longitudeDelta = fabs(northEastLongitude - southWestLongitude);
+        
+        struct Bounds bounds = self.bounds;
+        
+        bounds.northEastLatitude = [[northEastDict objectForKey:@"lat"] doubleValue];
+        bounds.southWestLatitude = [[southWestDict objectForKey:@"lat"] doubleValue];
+        bounds.northEastLongitude = [[northEastDict objectForKey:@"lng"] doubleValue];
+        bounds.southWestLongitude = [[southWestDict objectForKey:@"lng"] doubleValue];
+        
+        self.bounds = bounds;
+        
+        NSDictionary *northEastVDict = [viewportDict objectForKey:@"northeast"];
+        NSDictionary *southWestVDict = [viewportDict objectForKey:@"southwest"];
+        
+        struct Bounds viewport = self.viewport;
+        
+        viewport.northEastLatitude  = [[northEastVDict objectForKey:@"lat"] doubleValue];
+        viewport.southWestLatitude  = [[southWestVDict objectForKey:@"lat"] doubleValue];
+        viewport.northEastLongitude = [[northEastVDict objectForKey:@"lng"] doubleValue];
+        viewport.southWestLongitude = [[southWestVDict objectForKey:@"lng"] doubleValue];
+        
+        self.viewport = viewport;
+        
+        CLLocationDegrees latitudeDelta = fabs(self.bounds.northEastLatitude - self.bounds.southWestLatitude);
+        
+        CLLocationDegrees longitudeDelta = fabs(self.bounds.northEastLongitude - self.bounds.southWestLongitude);
         MKCoordinateSpan span = MKCoordinateSpanMake(latitudeDelta, longitudeDelta);
         self.region = MKCoordinateRegionMake(self.location.coordinate, span);
     }

@@ -219,7 +219,7 @@ static NSString *googleMapsAPIKey;
     return componentsValue;
 }
 
-- (NSString*)createBoundsStringFromRegion:(CLRegion *)region {
+- (NSString*)createBoundsStringFromRegion:(CLCircularRegion *)region {
     MKCoordinateRegion coordinateRegion = MKCoordinateRegionMakeWithDistance(region.center, region.radius, region.radius);
     
     NSString *bounds = [NSString stringWithFormat:@"%f,%f|%f,%f",

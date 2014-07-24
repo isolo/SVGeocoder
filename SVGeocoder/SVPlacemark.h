@@ -11,6 +11,13 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
+struct Bounds {
+    double northEastLatitude;
+    double southWestLatitude;
+    double northEastLongitude;
+    double southWestLongitude;
+};
+
 @interface SVPlacemark : NSObject
 
 - (id)initWithDictionary:(NSDictionary*)dictionary;
@@ -31,5 +38,8 @@
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly) MKCoordinateRegion region;
 @property (nonatomic, strong, readonly) CLLocation *location;
+
+@property (assign, nonatomic) struct Bounds bounds;
+@property (assign, nonatomic) struct Bounds viewport;
 
 @end
